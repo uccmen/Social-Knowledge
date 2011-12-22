@@ -1,1 +1,51 @@
-Hello World!
+Hello future researchers and code developers !
+
+
+I see that you're interested in enhancing the current state of the Social Knowledge App.
+Conceptually, it's very easy to understand.
+Let me guide you through the process of what the app intends to do;
+
+1. A user have a question in mind that he/she would like to know the answer to and thus posts a question on the main app page.
+2. If the question is new, the user would be able to 'forward' the question asked to several friends whom the user thinks they could answer the question.
+3. The request reaches the user's friend(s), and then the friend will be directed to the question asked page.
+4. The friend answers the question and the original asker would be notified.
+
+Simple as that.
+
+-The index.php file 
+---retrieves the Facebook user's FB ID and name. (I did this for beginner's practice purposes)
+
+-The main.php file
+---displays the main content of the app. It displays the table of most recently asked question and some other relevant information about the specifc question.
+
+
+The add_question.php file
+---handles the simple form when the user types in a question and clicks on the submit button on the main page.
+
+
+The add_answer.php file
+---handles another simple form when the user clicks on a question from the main page and wishes to submit an answer from the asked question page.
+
+
+The view_question.php file
+---handles the action when the user clicks on a question from the table seen on the main page of the app.
+
+
+The all_questions.php file
+---simply displays all the questions ever asked in the history of Social Knowledge incase the user wishes to browse for questions.
+
+
+Keep in mind that in order to run these files above, you would need;
+1. an APP ID (get it from Facebook by registering an app)
+2. an APP SECRET
+3. a mysql database
+4. 1 questions table.sql
+5. 1 answers table.sql
+6. Facebook's PHP SDK (can be download at Facebook's developers site)
+7. a site or server to host your app
+
+If any of my explanations above didn't make sense or if you have any specific questions, do leave a comment or email me at ucc.men(at)gmail.com
+
+Thanks!
+
+
