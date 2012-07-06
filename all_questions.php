@@ -1,50 +1,106 @@
 <?php
-$host="INSERT HOST NAME"; // Host name
-$username="INSERT USERNAME"; // Mysql username
-$password="INSERT PASSWORD"; // Mysql password
-$db_name="INSERT DATABASE NAME"; // Database name
-$tbl_name="INSERT TABLE NAME"; // Table name
+
+include 'facebook.php';
+$app_id = "194472553967386";
+$app_secret = "c1c717bae764f6942cab276638886fd0";
+$facebook = new Facebook(array(
+    'appId' => $app_id,
+    'secret' => $app_secret,
+    'cookie' => true
+));
+
+require 'social.php';
+$user = $facebook->getUser();
+$host="stevenswallcom.ipagemysql.com"; // Host name
+$username="socialqs"; // Mysql username
+$password="323232"; // Mysql password
+$db_name="socialqs_db"; // Database name
+$tbl_name="socialqs_question"; // Table name
 
 // Connect to server and select databse.
 mysql_connect("$host", "$username", "$password")or die("cannot connect");
 mysql_select_db("$db_name")or die("cannot select DB");
 
-$sql="SELECT * FROM $tbl_name ORDER BY datetime DESC";
+$sql="SELECT * FROM $tbl_name ORDER BY id DESC";
 // OREDER BY id DESC is order result by descending
 $result=mysql_query($sql);
 ?>
 
-<table width="90%" border="0" align="center" cellpadding="3" cellspacing="1" bgcolor="#CCCCCC">
-<tr>
-<td colspan="6" align="center" bgcolor="#E6E6E6"><strong><font size=16>LIST OF ALL QUESTIONS ASKED</font></strong></td>
-</tr>
-<tr>
-<td width="6%" align="center" bgcolor="#E6E6E6"><strong>FB ID</strong></td>
-<td width="4%" align="center" bgcolor="#E6E6E6"><strong>ID</strong></td>
-<td width="53%" align="center" bgcolor="#E6E6E6"><strong>Question</strong></td>
-<td width="6%" align="center" bgcolor="#E6E6E6"><strong>Views</strong></td>
-<td width="6%" align="center" bgcolor="#E6E6E6"><strong>Replies</strong></td>
-<td width="13%" align="center" bgcolor="#E6E6E6"><strong>Date/Time</strong></td>
-</tr>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" media="all" href="tables.css" />
+
+<center>
+
+<table id="gradient-style" summary="List Of All Questions Asked">
+
+    <thead>
+
+      <tr>
+    		<th scope="col" colspan="8"><font size="30"><center>LIST OF ALL QUESTIONS ASKED<center></font></th>
+    	</tr>
+    	
+    	<tr>
+
+        	<th scope="col" align="center">User</th>
+
+            <th scope="col">Name</th>
+
+            <th scope="col">Question</th>
+
+            <th scope="col">Views</th>
+            
+            <th scope="col">Replies</th>
+            
+            <th scope="col">Likes</th>
+            
+            <th scope="col">Shares</th>
+            
+            <th scope="col" align="center">Date/Time</th>
+
+        </tr>
+
+    </thead>
+
+    <tfoot>
+
+    	<tr>
+
+        	<td colspan="8"><a href="main.php"><strong>Back to Main</strong></a></td>
+
+
+        </tr>
+
+    </tfoot>
+
+    <tbody>
 
 <?php
-while($rows=mysql_fetch_array($result)){ // Start looping table row
-?>
-<tr>
-<td bgcolor="#FFFFFF"><? echo $rows['fbid']; ?></td>
-<td bgcolor="#FFFFFF"><? echo $rows['id']; ?></td>
-<td bgcolor="#FFFFFF"><a href="view_question.php?id=<? echo $rows['id']; ?>"><? echo $rows['question']; ?></a><BR></td>
-<td align="center" bgcolor="#FFFFFF"><? echo $rows['view']; ?></td>
-<td align="center" bgcolor="#FFFFFF"><? echo $rows['reply']; ?></td>
-<td align="center" bgcolor="#FFFFFF"><? echo $rows['datetime']; ?></td>
-</tr>
+while($rows=mysql_fetch_array($result)){ //Start looping table row
 
+
+?>
+    	<tr>
+		<td align="center"><a target="_blank" href="http://www.facebook.com/<? echo $rows['fbid']; ?>"><img src="https://graph.facebook.com/<? echo $rows['fbid']; ?>/picture"></a></td>
+		<td><? echo $rows['name']; ?></td>
+		<td><a href="view_question.php?id=<? echo $rows['id']; ?>"><? echo $rows['question']; ?></a></td>
+		<td align="center"><? echo $rows['view']; ?></td>
+		<td align="center"><? echo $rows['replies']; ?></td>
+		<td align="center"><? echo $rows['likes']; ?></td>
+		<td align="center"><? echo $rows['shares']; ?></td>
+		<td align="center"><? echo $rows['datetime']; ?></td>
+		</tr>
+
+
+    </tbody>
+    
 <?php
 // Exit looping and close connection
 }
 mysql_close();
 ?>
-<tr>
-<td colspan="6" align="right" bgcolor="#E6E6E6"><a href="main.php"><strong>Back to Main</strong> </a></td>
-</tr>
+
 </table>
+</center>
+</html>
