@@ -1,9 +1,21 @@
 <?php
-$host="INSERT HOST NAME"; // Host name
-$username="INSERT USERNAME"; // Mysql username
-$password="INSERT PASSWORD"; // Mysql password
-$db_name="INSERT DATABASE NAME"; // Database name
-$tbl_name="INSERT TABLE NAME"; // Table name
+
+
+include 'facebook.php';
+$app_id = "194472553967386";
+$app_secret = "c1c717bae764f6942cab276638886fd0";
+$facebook = new Facebook(array(
+    'appId' => $app_id,
+    'secret' => $app_secret,
+    'cookie' => true
+));
+
+
+$host="stevenswallcom.ipagemysql.com"; // Host name
+$username="socialqs"; // Mysql username
+$password="323232"; // Mysql password
+$db_name="socialqs_db"; // Database name
+$tbl_name="socialqs_question"; // Table name
 
 // Connect to server and select databse.
 mysql_connect("$host", "$username", "$password")or die("cannot connect");
@@ -12,63 +24,270 @@ mysql_select_db("$db_name")or die("cannot select DB");
 // get value of id that sent from address bar
 $id=$_GET['id'];
 
+
+
 $sql="SELECT * FROM $tbl_name WHERE id='$id'";
 $result=mysql_query($sql);
 
 $rows=mysql_fetch_array($result);
+
+
+$user = $facebook->getUser();
+
+
+$url = 'http://stevenswall.com/fbtest/view_question.php?id='.$rows['id'].'';
+
+
+
+$title= $rows['question'];
+$image=urlencode("http://i.istockimg.com/file_thumbview_approve/3411056/2/stock-photo-3411056-i-have-a-question.jpg");
+$summary=urlencode("Do you know the answer to this question?");
 ?>
 
-<table width="90%" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#CCCCCC">
-<tr>
-<td><table width="100%" border="0" cellpadding="3" cellspacing="1" bordercolor="1" bgcolor="#FFFFFF">
-<tr>
-<h1>Question : <? echo $rows['question']; ?></h1>
-<td bgcolor="#F8F7F1"><strong><? echo $rows['fbid']; ?></strong></td>
-</tr>
 
-<tr>
-<td bgcolor="#F8F7F1"><strong>Date/time : </strong><? echo $rows['datetime']; ?></td>
-</tr>
-</table></td>
-</tr>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="http://www.facebook.com/2008/fbml">
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>
+<? echo $rows['question']; ?>
+</title>
+
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# socialqs: http://ogp.me/ns/fb/socialqs#">
+  <meta property="fb:app_id"      content="194472553967386" />
+  <meta property="og:type"        content="socialqs:question" />
+  <meta property="og:url"         content="http://stevenswall.com/fbtest/view_question.php?id=<? echo $rows['id']; ?>" />
+  <meta property="og:title"       content="<? echo $rows['question']; ?>" />
+  <meta property="og:description" content="Do you know the answer to this question?" />
+  <meta property="og:image"       content="http://i.istockimg.com/file_thumbview_approve/3411056/2/stock-photo-3411056-i-have-a-question.jpg" />
+  <meta property="fb:admins" content="1222117589" />
+
+</head>
+<link rel="stylesheet" type="text/css" href="share.css" />
+
+
+<div id="fb-root"></div>
+    <script src="http://connect.facebook.net/en_US/all.js"></script>
+    <script>
+        FB.init({
+            appId:'194472553967386',
+            channelUrl : 'http://www.stevenswall.com/fbtest/channel.html', // Channel File
+            cookie:true,
+            status:true,
+            xfbml:true,
+            frictionlessRequests : true,
+            oauth:true
+        });
+        
+        function sendRequestViaMultiFriendSelector() {
+  	        FB.ui({method: 'apprequests',
+		          message: 'Please answer a question I have for you via Social Knowledge'
+		        }, requestCallback);
+		      }
+		
+		       function requestCallback(response)
+			  	  {
+			  	      if(response && response.request) {
+			  	           // Here, requests have been sent, facebook gives you the request and the array of recipients
+			  	           console.log(response.request);
+			  	      } else {
+			  	           // No requests sent, you can do what you want (like...nothing, and stay on the page).
+			  	      }
+				  }
+
+
+          FB.getLoginStatus(function(response) {
+			  		    if (response.status === 'connected') {
+			  		      var uid = response.authResponse.userID;
+			  		      var accessToken = response.authResponse.accessToken;
+
+			  		    } else if (response.status === 'not_authorized') {
+			  		      // the user is logged in to Facebook,
+			  		      //but not connected to the app
+			  		      window.location = "http://apps.facebook.com/socialqs";
+			  		    } else {
+			  		      window.location = "http://stevenswall.com/fbtest/index.php";
+			  		    }
+		 });
+
+
+		  FB.Event.subscribe('comment.create', function(response)
+		  {
+		    alert('Thank you for your comment!');
+});
+</script>
+
+
+
+        <script>(function(d, s, id) {
+		  var js, fjs = d.getElementsByTagName(s)[0];
+		  if (d.getElementById(id)) return;
+		  js = d.createElement(s); js.id = id;
+		  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=194472553967386";
+		  fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));</script>
+
+
+<link rel="stylesheet" type="text/css" media="all" href="center.css" />
+<link rel="stylesheet" type="text/css" media="all" href="tables.css" />
+
+
+
+<center>
+<table id="one-column-emphasis">
+
+    <colgroup>
+
+    	<col class="oce-first" />
+
+    </colgroup>
+
+    <thead>
+
+    	<tr>
+
+        	<th scope="col">Question :</th>
+
+            <th scope="col" colspan="7" align="left"><? echo $rows['question']; ?></th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    	<tr>
+
+        	<td>Asked by</td>
+
+            <td colspan="7" align="left"><a target="_blank" href="http://www.facebook.com/<? echo $rows['fbid']; ?>"><img src="https://graph.facebook.com/<? echo $rows['fbid']; ?>/picture"></a></td>
+
+        </tr>
+
+        <tr>
+
+        	<td>Name</td>
+
+            <td colspan="7" align="left"><? echo $rows['name']; ?></td>
+
+        </tr>
+
+        <tr>
+
+		        	<td>Date and Time</td>
+
+		            <td colspan="7" align="left"><? echo $rows['datetime']; ?></td>
+
+        </tr>
+
+        <tr>
+
+        	<td>Share this Question</td>
+
+            <td colspan="7" align="left">
+            <div class="button2">
+			<a id="button" onClick="window.open('http://www.facebook.com/sharer.php?s=100&amp;p[title]=<?php echo $title;?>&amp;p[summary]=<?php echo $summary;?>&amp;p[url]=<?php echo $url; ?>&amp;&p[images][0]=<?php echo $image;?>', 'sharer', 'toolbar=0,status=0,width=548,height=325');" href="javascript: void(0)">
+			Share
+			</a>
+			<div class="counter">
+			<div id="fbcount">
+			<? echo $rows['shares']; ?>
+			</div>
+			</div>
+			</div>
+			</td>
+
+        </tr>
+
+        <tr>
+
+        	<td>Like this Question</td>
+
+            <td colspan="7" align="left"><div class="fb-like" data-href="http://stevenswall.com/fbtest/view_question.php?id=<? echo $rows['id']; ?>" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="tahoma"></div>
+			</td>
+
+        </tr>
+        
+         <tr>
+		
+		        	<td>Be Honest...</td>
+		
+		            <td colspan="7" align="left">
+		            <form action="add_question.php" method="post">
+		            
+					<input type="submit" value="I don't know" style="height: 30px; width: 100px; font-size:32"/>
+					
+					</form>
+
+					</td>
+		
+        </tr>
+        
+        <tr>
+		
+		        	<td>Ask Your Friends</td>
+		
+		            <td colspan="7" align="left">
+		            <input type="button" onclick="sendRequestViaMultiFriendSelector(); return false;" value="Share this app!"/>
+					</td>
+		
+        </tr>
+
+        <tr>
+
+		        	<td><a href="main.php">Back to Main Page</a></td>
+
+		            <td colspan="7" align="left"></td>
+
+        </tr>
+
+    </tbody>
+
 </table>
-<BR>
 
 
+<div class="fb-comments" data-href="http://stevenswall.com/fbtest/view_question.php?id=<? echo $rows['id']; ?>" data-num-posts="5" data-width="1000" data-notify="true"></div>
+
+</center>
+
+</html>
 
 
-<table width="90%" border="0" align="center" cellpadding="3" cellspacing="1" bgcolor="#CCCCCC">
-<tr>
-<td width="6%" align="center" bgcolor="#E6E6E6"><strong>FB ID</strong></td>
-<td width="6%" align="center" bgcolor="#E6E6E6"><strong>A ID</strong></td>
-<td width="53%" align="center" bgcolor="#E6E6E6"><strong>Answer</strong></td>
-<td width="13%" align="center" bgcolor="#E6E6E6"><strong>Date/Time</strong></td>
-</tr>
-<?php
-$tbl_name2="socialqs_answer"; // Switch to table "socialqs_answer"
-
-$sql2="SELECT * FROM $tbl_name2 WHERE question_id='$id' ORDER BY a_datetime DESC";
-$result2=mysql_query($sql2);
-
-while($rows=mysql_fetch_array($result2)){
-?>
-<tr>
-<td bgcolor="#F8F7F1"><? echo $rows['fbid']; ?></td>
-<td bgcolor="#F8F7F1"><? echo $rows['a_id']; ?></td>
-<td bgcolor="#F8F7F1"><? echo $rows['a_answer']; ?></td>
-<td bgcolor="#F8F7F1"><? echo $rows['a_datetime']; ?></td>
-</tr>
 
 
 <?
-}
 
+require 'social.php';
 
 $sql3="SELECT view FROM $tbl_name WHERE id='$id'";
 $result3=mysql_query($sql3);
 
 $rows=mysql_fetch_array($result3);
 $view=$rows['view'];
+
+//FBDATA
+$sql7="SELECT shares,likes,replies FROM $tbl_name WHERE id='$id'";
+$result7=mysql_query($sql7);
+$rows=mysql_fetch_array($result7);
+$likes=$rows['likes'];
+$shares=$rows['shares'];
+$replies=$rows['replies'];
+
+if(empty($shares)){
+$shares=0;
+$sql8="INSERT INTO $tbl_name(shares) VALUES('$shares') WHERE id='$id'";
+$result4=mysql_query($sql8);
+}
+else{
+$sql6="UPDATE $tbl_name set shares='$fbcount', likes='$likecount',replies='$commentcount' WHERE id='$id'";
+$result6=mysql_query($sql6);
+}
+//FBDATA
+
 
 // if have no counter value set counter = 0
 if(empty($view)){
@@ -82,16 +301,7 @@ $addview=$view+1;
 $sql5="update $tbl_name set view='$addview' WHERE id='$id'";
 $result5=mysql_query($sql5);
 
+
+
 mysql_close();
 ?>
-<tr>
-<td colspan="4" align="right" bgcolor="#E6E6E6"><a href="main.php"><strong>Back to Main</strong> </a></td>
-</tr>
-</table><br>
-<BR>
-
-<form name="form1" action="add_answer.php" method="post" align="center">
-<input name="id" type="hidden" value="<? echo $id; ?>">
-<input type="text" name="a_answer" id="a_answer" style="width:1000px; height:100px; font-size:35"/>
-<input type="submit" value="Submit Answer !" style="height: 50px; width: 350px; font-size:32"/>
-</form>
